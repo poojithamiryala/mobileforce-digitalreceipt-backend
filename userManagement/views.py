@@ -1,5 +1,7 @@
+import datetime
 import json
 
+import jwt
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.core.validators import validate_email
@@ -7,6 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 import random as r
 
+from digitalReceipt import settings
 from services.email_verification import GmailObject
 from .models import User
 from .serializers import UserSerializer
@@ -56,10 +59,10 @@ def user_registration_send_email(request):
                                                 request.data['email_address'])
                     return JsonResponse({
                         "data": {
-                            "otp":otp,
-                            "email_address":request.data['email_address']
+                            "otp": otp,
+                            "email_address": request.data['email_address']
                         },
-                        "message":"Sent email with otp successfully"
+                        "message": "Sent email with otp successfully"
                     }, status=status.HTTP_200_OK)
                 except Exception as error:
                     return JsonResponse({
@@ -90,3 +93,30 @@ def create_user(request):
                 serializer.save()
                 return JsonResponse(serializer.data, status=status.HTTP_200_OK)
             return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        try:
+            user = User.objects.get(email_address=request.data['email_address'])
+            userData = UserSerializer(user, many=False).data
+            userData['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
+            token = jwt.encode(userData, settings.SECRET_KEY, algorithm='HS256')
+            data = {
+                'message': 'Retreived token successfully',
+                'data': {
+                    '_id': userData['id'],
+                    'auth_token': token.decode("utf-8")
+                },
+                "status": status.HTTP_200_OK
+            }
+            return JsonResponse(data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return JsonResponse({
+                'error':"User Does not exist"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({
+                'error': e
+            }, status=status.HTTP_400_BAD_REQUEST)
