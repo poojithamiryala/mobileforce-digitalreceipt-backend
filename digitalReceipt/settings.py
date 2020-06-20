@@ -24,7 +24,7 @@ SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['myapplication.herokuapp.com']
 
 # Application definition
 
@@ -36,17 +36,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'userManagement.apps.UsermanagementConfig'
+    'userManagement.apps.UsermanagementConfig',
+    'businessManagement.apps.BusinessmanagementConfig'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware'
 ]
 
 ROOT_URLCONF = 'digitalReceipt.urls'
@@ -118,3 +121,10 @@ STATIC_URL = '/static/'
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'
 email_app_password = 'poidokbgxorvdztp'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
