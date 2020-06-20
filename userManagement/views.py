@@ -48,9 +48,7 @@ def user_registration_send_email(request):
         else:
             # Check if there is any user with this email address
             try:
-                print(request.data['email_address'])
                 userData = User.objects.get(email_address=request.data['email_address'])
-                print("text")
             except User.DoesNotExist:
                 otp = otpgen()
                 try:

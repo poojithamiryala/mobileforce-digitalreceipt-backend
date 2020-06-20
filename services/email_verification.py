@@ -31,5 +31,5 @@ class Gmail(object):
 
 
 class GmailObject:
-    print("Start gmail")
+    print("Starting gmail service")
     gm = Gmail(email_address, email_app_password)
