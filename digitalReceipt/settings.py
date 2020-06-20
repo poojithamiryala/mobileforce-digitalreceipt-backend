@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'userManagement.apps.UsermanagementConfig'
 ]
 
 MIDDLEWARE = [
@@ -113,3 +114,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# No security issues occur in email the given password here is an app password
+email_address = 'hngdigitalreceipt@gmail.com'
+email_app_password = 'poidokbgxorvdztp'
