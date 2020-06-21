@@ -124,7 +124,7 @@ def login(request):
             user = User.objects.get(email_address=request.data['email_address'],password=request.data['password'])
             userData = UserSerializer(user, many=False).data
             userData['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
-            token = jwt.encode(userData, settings.SECRET_KEY, algorithm='HS256')
+            token = jwt.encode(userData, 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b', algorithm='HS256')
             data = {
                 'message': 'Retreived token successfully',
                 'data': {

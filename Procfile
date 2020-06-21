@@ -1,0 +1,1 @@
+web: gunicorn digitalReceipt.wsgi --log-file -
