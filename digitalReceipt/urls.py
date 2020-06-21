@@ -20,7 +20,8 @@ from services.email_verification import GmailObject
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('v1/user/',include('userManagement.urls'))
+    path('v1/user/',include('userManagement.urls')),
+    path('v1/business/', include('businessManagement.urls'))
 ]
 
 # staring gmail service on start of running server

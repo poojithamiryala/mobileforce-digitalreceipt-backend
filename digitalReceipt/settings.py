@@ -25,7 +25,6 @@ SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -36,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'userManagement.apps.UsermanagementConfig'
+    'userManagement.apps.UsermanagementConfig',
+    'businessManagement.apps.BusinessmanagementConfig'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +47,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware'
 ]
 
 ROOT_URLCONF = 'digitalReceipt.urls'
