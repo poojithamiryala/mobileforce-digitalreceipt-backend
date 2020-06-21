@@ -1,1 +1,6 @@
-djangorestframework==3.11.0
+django
+gunicorn
+django-heroku
+djangorestframework
+djoser
+PyJwt

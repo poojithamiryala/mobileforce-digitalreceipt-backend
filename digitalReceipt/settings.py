@@ -24,7 +24,8 @@ SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['gentle-dusk-67310.herokuapp.com','127.0.0.1']
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,8 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'userManagement.apps.UsermanagementConfig',
-    'businessManagement.apps.BusinessmanagementConfig'
+    'rest_framework.authtoken',
+    'authapp',
+    'djoser',
+    'userManagement',
+    'businessManagement'
 ]
 
 MIDDLEWARE = [
@@ -70,6 +74,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -78,6 +83,19 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT AUTHENTICATION_CLASSES':(
+        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.SessionAuthentication'
+        'rest_framework.authentication.TokenAuthentication'
+
+    ),
+    'DEFAULT_PERMISSIONS-CLASSES':(
+        'rest_framework.permissions.IsAuthenticated'
+    ),
+
 }
 
 # Password validation
@@ -115,6 +133,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
 
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'

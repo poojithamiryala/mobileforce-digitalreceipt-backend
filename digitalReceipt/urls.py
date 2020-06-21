@@ -15,14 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+#from .router import router
+from rest_framework.authtoken import views
 
 from services.email_verification import GmailObject
+from .views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('v1/user/',include('userManagement.urls')),
+    path('checkserver/',index, name='index' ),
+    path('auth/', include('authapp.urls')),
+    path('v1/user/', include('userManagement.urls')),
     path('v1/business/', include('businessManagement.urls'))
 ]
-
-# staring gmail service on start of running server
 GmailObject()
