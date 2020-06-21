@@ -12,7 +12,7 @@ class AuthorizationMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        jwtEscapeUrls = ['/v1/user/otp_register',
+        jwtEscapeUrls = ['/v1/user/otp_register','/v1/user/change_password','/v1/user/email/exists'
                          '/v1/user/register','/v1/user/login']
         if request.path in jwtEscapeUrls:
             response = self.get_response(request)
