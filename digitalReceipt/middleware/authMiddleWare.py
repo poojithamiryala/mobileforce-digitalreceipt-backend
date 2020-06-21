@@ -4,6 +4,7 @@ import jwt
 from django.http import HttpResponseForbidden
 
 from digitalReceipt import settings
+from userManagement.models import User
 
 
 class AuthorizationMiddleware(object):
@@ -14,7 +15,6 @@ class AuthorizationMiddleware(object):
         jwtEscapeUrls = ['/v1/user/otp_register',
                          '/v1/user/register','/v1/user/login']
         if request.path in jwtEscapeUrls:
-            print("text122")
             response = self.get_response(request)
             return response
         else:
@@ -24,6 +24,7 @@ class AuthorizationMiddleware(object):
                     vaildate_token = jwt.decode(header_token, settings.SECRET_KEY, algorithm='HS256')
                     if time.time() < vaildate_token['exp']:
                         request.user_id = vaildate_token['id']
+                        user = User.objects.get(id=request.user_id)
                         response = self.get_response(request)
                         print(response)
                         return response
@@ -32,5 +33,5 @@ class AuthorizationMiddleware(object):
                 except Exception as error:
                     return HttpResponseForbidden(error)
             else:
-                return HttpResponseForbidden("Invalid credentails")
+                return HttpResponseForbidden("Login")
 
