@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'authapp',
     'djoser',
     'userManagement',
-    'businessManagement'
+    'businessManagement',
+    'customers',
 ]
 
 MIDDLEWARE = [
