@@ -26,6 +26,7 @@ urlpatterns = [
     path('checkserver/',index, name='index' ),
     path('auth/', include('authapp.urls')),
     path('v1/user/', include('userManagement.urls')),
-    path('v1/business/', include('businessManagement.urls'))
+    path('v1/business/', include('businessManagement.urls')),
+    path('v1/', include('customers.urls')),
 ]
 GmailObject()
