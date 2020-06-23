@@ -1,10 +1,30 @@
 import smtplib
 
-from digitalReceipt.settings import email_address, email_app_password
 
 
 class Gmail(object):
     def __init__(self, fromEmail, password):
+        self.smtp_connect(fromEmail, password)
+
+    def send_message(self, subject, body, toEmail):
+        try:
+            headers = [
+                "From: " + self.fromEmail,
+                "Subject: " + subject,
+                "To: " + toEmail,
+                "MIME-Version: 1.0",
+                "Content-Type: text/html"]
+            headers = "\r\n".join(headers)
+            self.session.sendmail(
+                self.fromEmail,
+                toEmail,
+                headers + "\r\n\r\n" + body)
+            self.session.close()
+        except Exception as error:
+            self.smtp_connect(self.fromEmail, self.password)
+            self.send_message(subject, body, toEmail)
+
+    def smtp_connect(self, fromEmail, password):
         self.fromEmail = fromEmail
         self.password = password
         self.server = 'smtp.gmail.com'
@@ -15,21 +35,3 @@ class Gmail(object):
         session.ehlo
         session.login(self.fromEmail, self.password)
         self.session = session
-
-    def send_message(self, subject, body, toEmail):
-        headers = [
-            "From: " + self.fromEmail,
-            "Subject: " + subject,
-            "To: " + toEmail,
-            "MIME-Version: 1.0",
-            "Content-Type: text/html"]
-        headers = "\r\n".join(headers)
-        self.session.sendmail(
-            self.fromEmail,
-            toEmail,
-            headers + "\r\n\r\n" + body)
-
-
-class GmailObject:
-    print("Starting gmail service")
-    gm = Gmail(email_address, email_app_password)

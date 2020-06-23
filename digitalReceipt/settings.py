@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,13 +22,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['gentle-dusk-67310.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['frozen-island-67494.herokuapp.com','127.0.0.1']
 
 # Application definition
 
@@ -38,10 +40,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authapp',
-    'djoser',
     'userManagement',
-    'businessManagement',
     'customers',
+    'businessManagement.apps.BusinessmanagementConfig',
+    'djoser',
+    'push_notifications',
 ]
 
 MIDDLEWARE = [
@@ -52,8 +55,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware'
+    'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
 
 ROOT_URLCONF = 'digitalReceipt.urls'
 
@@ -79,12 +84,24 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dqgbprdrjnb1f',
+        'USER': 'vhwihfjmrokxtr',
+        'PASSWORD': '0eb2d1620febaf27b8b98351bd5140dee76aa9efcd8dfe60e693b882e25dec0d',
+        'HOST': 'ec2-54-234-44-238.compute-1.amazonaws.com',
+        'PORT': '5432',
 }
+}
+
+import dj_database_url
+
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env) 
+#dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
     'DEFAULT AUTHENTICATION_CLASSES':(
@@ -135,7 +152,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+STATIC_ROOT = os.path.join(BASE_DIR, "live-static-files", "static-root")
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
+
 
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'
-email_app_password = 'poidokbgxorvdztp'
+email_app_password = 'hosebgyqtuckqqkt'
