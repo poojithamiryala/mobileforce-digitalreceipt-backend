@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['frozen-island-67494.herokuapp.com','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    'businessManagement.apps.BusinessmanagementConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,13 +40,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authapp',
-    'customers',
-    'djoser',
     'userManagement',
     'customers',
-
+    'businessManagement.apps.BusinessmanagementConfig',
+    'djoser',
     'push_notifications',
-    'businessManagement'
 ]
 
 MIDDLEWARE = [
@@ -87,6 +84,8 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -101,7 +100,7 @@ DATABASES = {
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default'].update(db_from_env) 
+DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
@@ -164,4 +163,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
 
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'
-email_app_password = 'poidokbgxorvdztp'
+email_app_password = 'hosebgyqtuckqqkt'

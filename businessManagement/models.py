@@ -13,7 +13,7 @@ class Receipts(models.Model):
     receipt_number = models.IntegerField()  # need to customize this
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    customer = models.ForeignKey(CustomerDetails, on_delete=models.CASCADE,null=False)
+    customer = models.ForeignKey(CustomerDetails, on_delete=models.CASCADE, null=False)
 
 
 class Products(models.Model):
@@ -24,6 +24,7 @@ class Products(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
 class Notifications(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivered = models.BooleanField(default=False)
@@ -31,4 +32,3 @@ class Notifications(models.Model):
     date_to_deliver = models.DateField(null=True, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
