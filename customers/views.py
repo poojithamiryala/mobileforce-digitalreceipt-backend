@@ -1,17 +1,33 @@
 import json
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django.shortcuts import render
 from django.http import JsonResponse
+from rest_framework.decorators import api_view
+
 from .models import customers
-from .serializers import customersSerializer
+from .serializers import customersSerializer, CustomersSerializer
 
 
 class indexViewSet(viewsets.ModelViewSet):
-	queryset = customers.objects.all().order_by('name')
-	serializer_class = customersSerializer
+    queryset = customers.objects.all().order_by('name')
+    serializer_class = customersSerializer
+
 
 def single(request, id):
-	customer = customers.objects.get(id = id)
-	return JsonResponse(customer, safe = False)
-		
+    customer = customers.objects.get(id=id)
+    return JsonResponse(customer, safe=False)
 
+
+@api_view(['POST'])
+def create_customer(request):
+    if request.method == 'POST':
+        print(request.user_id)
+        request.data._mutable = True
+        request.data['user'] = request.user_id
+        request.data._mutable = False
+        print(request.data)
+        serializer = CustomersSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

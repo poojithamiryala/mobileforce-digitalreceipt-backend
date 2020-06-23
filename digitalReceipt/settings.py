@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,8 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -29,6 +31,7 @@ ALLOWED_HOSTS = ['gentle-dusk-67310.herokuapp.com','127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'businessManagement.apps.BusinessmanagementConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +43,9 @@ INSTALLED_APPS = [
     'authapp',
     'djoser',
     'userManagement',
-    'businessManagement',
     'customers',
+
+    'push_notifications',
 ]
 
 MIDDLEWARE = [
@@ -54,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware'
 ]
+
 
 ROOT_URLCONF = 'digitalReceipt.urls'
 

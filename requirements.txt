@@ -4,3 +4,7 @@ django-heroku
 djangorestframework
 djoser
 PyJwt
+django-push-notifications
+django_cron
+apscheduler
+django-environ
