@@ -12,4 +12,11 @@ pylint==2.5.2
 webencodings==0.5.1
 whitenoise==5.1.0
 gunicorn
+django-heroku
+djangorestframework
+djoser
 PyJwt
+django-push-notifications
+django_cron
+apscheduler
+django-environ

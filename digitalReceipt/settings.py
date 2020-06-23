@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
+
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -18,8 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,10 +40,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'authapp',
-    'customers',
-    'djoser',
     'userManagement',
-    'businessManagement'
+    'customers',
+    'businessManagement.apps.BusinessmanagementConfig',
+    'djoser',
+    'push_notifications',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +58,7 @@ MIDDLEWARE = [
     'digitalReceipt.middleware.authMiddleWare.AuthorizationMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
+
 
 ROOT_URLCONF = 'digitalReceipt.urls'
 
@@ -79,6 +83,8 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
+
+
 
 DATABASES = {
     'default': {
@@ -157,4 +163,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
 
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'
-email_app_password = 'poidokbgxorvdztp'
+email_app_password = 'hosebgyqtuckqqkt'

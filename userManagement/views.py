@@ -5,12 +5,13 @@ import jwt
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.core.validators import validate_email
+from push_notifications.models import GCMDevice, APNSDevice
 from rest_framework import status
 from rest_framework.decorators import api_view
 import random as r
 
 from digitalReceipt import settings
-from services.email_verification import GmailObject
+from services.email_verification import Gmail
 from .models import User
 from .serializers import UserSerializer
 
@@ -77,7 +78,8 @@ def user_registration_send_email(request):
             except User.DoesNotExist:
                 otp = otpgen()
                 try:
-                    GmailObject.gm.send_message("Email OTP Verification - Digital Receipt", emailOtpMessage(otp),
+                    gm=Gmail(settings.email_address,settings.email_app_password)
+                    gm.send_message("Email OTP Verification - Digital Receipt", emailOtpMessage(otp),
                                                 request.data['email_address'])
                     return JsonResponse({
                         "data": {
@@ -125,6 +127,13 @@ def login(request):
             userData = UserSerializer(user, many=False).data
             userData['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
             token = jwt.encode(userData, 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b', algorithm='HS256')
+            # device_id = request.data['device_id']
+            # reg_id = request.data['registration_id']
+            # if request.data['deviceType'] == 'Andriod':
+            #     GCMDevice.objects.create(registration_id=reg_id,cloud_message_type="FCM",  device_id=device_id)
+            # else:
+            #     APNSDevice.objects.create(registration_id=reg_id, device_id=device_id)
+            # User.objects.filter(id=userData['id']).update(registration_id=reg_id,deviceType=request.data['deviceType'])
             data = {
                 'message': 'Retreived token successfully',
                 'data': {

@@ -18,7 +18,7 @@ from django.urls import path, include
 #from .router import router
 from rest_framework.authtoken import views
 
-from services.email_verification import GmailObject
+from .cron.notification import start
 from .views import index
 
 urlpatterns = [
@@ -27,6 +27,7 @@ urlpatterns = [
     path('auth/', include('authapp.urls')),
     path('v1/user/', include('userManagement.urls')),
     path('v1/business/', include('businessManagement.urls')),
-    path('v1', include('customers.urls'))
+    path('v1/customer/', include('customers.urls')),
 ]
-GmailObject()
+
+start()

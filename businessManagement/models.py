@@ -3,6 +3,7 @@ from django.db import models
 import uuid
 
 # Create your models here.
+from customers.models import CustomerDetails
 from userManagement.models import User
 
 
@@ -12,6 +13,7 @@ class Receipts(models.Model):
     receipt_number = models.IntegerField()  # need to customize this
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    customer = models.ForeignKey(CustomerDetails, on_delete=models.CASCADE, null=False)
 
 
 class Products(models.Model):
