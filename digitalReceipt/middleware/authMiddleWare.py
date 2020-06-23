@@ -14,7 +14,7 @@ class AuthorizationMiddleware(object):
     def __call__(self, request):
 
         jwtEscapeUrls = ['/v1/user/otp_register','/v1/user/change_password','/v1/user/email/exists',
-                         '/v1/user/register','/v1/user/login','/v1/customers-auth']
+                         '/v1/user/register','/v1/user/login']
         print(request.path)
         print(request.path in jwtEscapeUrls)
         if request.path in jwtEscapeUrls:
