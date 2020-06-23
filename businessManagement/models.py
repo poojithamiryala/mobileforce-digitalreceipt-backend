@@ -21,3 +21,11 @@ class Products(models.Model):
     amount = models.FloatField(null=True, validators=[MinValueValidator(0)])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class Notifications(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    delivered = models.BooleanField(default=False)
+    message = models.CharField(null=True, max_length=100)
+    date_to_deliver = models.DateField(null=True, max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
