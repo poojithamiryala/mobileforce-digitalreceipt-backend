@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'customers',
     'businessManagement.apps.BusinessmanagementConfig',
     'djoser',
-    'push_notifications',
+    "fcm_django"
 ]
 
 MIDDLEWARE = [
@@ -100,7 +100,7 @@ DATABASES = {
 import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default'].update(db_from_env) 
+DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
@@ -164,3 +164,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
 # No security issues occur in email the given password here is an app password
 email_address = 'hngdigitalreceipt@gmail.com'
 email_app_password = 'hosebgyqtuckqqkt'
+
+
+FCM_DJANGO_SETTINGS = {
+    "FCM_SERVER_KEY": "AAAAMRXIXr0:APA91bGZWkJaJClsj91nx_wmwKyYYzl7BU287NjGVmKV7ZY5Xmxyt11ptjZZXtlaFvsuDRE3wXaOK6hWIcHd8hY93MXlwhcxI3U5Gz_u0zvOQ8g9VZzHBQI4Uef4CA3FRYY0OOEXzijL",
+}

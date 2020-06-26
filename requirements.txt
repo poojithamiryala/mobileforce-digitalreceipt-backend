@@ -20,3 +20,4 @@ django-push-notifications
 django_cron
 apscheduler
 django-environ
+fcm_django

@@ -27,6 +27,7 @@ class Products(models.Model):
 class Notifications(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivered = models.BooleanField(default=False)
+    title = models.CharField(null=True, max_length=100)
     message = models.CharField(null=True, max_length=100)
     date_to_deliver = models.DateField(null=True, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
