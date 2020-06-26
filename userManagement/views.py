@@ -5,7 +5,7 @@ import jwt
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.core.validators import validate_email
-from push_notifications.models import GCMDevice, APNSDevice
+from fcm_django.models import FCMDevice
 from rest_framework import status
 from rest_framework.decorators import api_view
 import random as r
@@ -127,13 +127,13 @@ def login(request):
             userData = UserSerializer(user, many=False).data
             userData['exp'] = datetime.datetime.utcnow() + datetime.timedelta(seconds=86400)
             token = jwt.encode(userData, 'b&!_55_-n0p33)lx=#)$@h#9u13kxz%ucughc%k@w_^x0gyz!b', algorithm='HS256')
-            # device_id = request.data['device_id']
-            # reg_id = request.data['registration_id']
-            # if request.data['deviceType'] == 'Andriod':
-            #     GCMDevice.objects.create(registration_id=reg_id,cloud_message_type="FCM",  device_id=device_id)
-            # else:
-            #     APNSDevice.objects.create(registration_id=reg_id, device_id=device_id)
-            # User.objects.filter(id=userData['id']).update(registration_id=reg_id,deviceType=request.data['deviceType'])
+            reg_id = request.data['registration_id']
+            fcm_device = FCMDevice.objects.create(
+                type=request.data['deviceType'],
+                registration_id=reg_id)
+            fcm_device.send_message(title="Notification", body="Login successful",
+                                    data={"click_action": "FLUTTER_NOTIFICATION_CLICK"})
+            User.objects.filter(id=userData['id']).update(registration_id=reg_id,deviceType=request.data['deviceType'])
             data = {
                 'message': 'Retreived token successfully',
                 'data': {
