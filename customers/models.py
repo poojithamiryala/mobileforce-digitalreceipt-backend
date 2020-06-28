@@ -14,4 +14,5 @@ class CustomerDetails(models.Model):
     email = models.EmailField(max_length=200, null=False)
     platform = models.CharField(max_length=50, null=True)
     phoneNumber = models.CharField(max_length=50, null=False)
+    address=models.CharField(max_length=150, null=False)
     user = models.CharField(max_length=200, null=False)

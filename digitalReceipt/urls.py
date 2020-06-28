@@ -17,9 +17,28 @@ from django.contrib import admin
 from django.urls import path, include
 #from .router import router
 from rest_framework.authtoken import views
-
+from django.views.generic import TemplateView
 from .cron.notification import start
 from .views import index
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Digital Receipt API",
+      default_version='v1',
+      description="Test the API here using Swagger, For postman please go here: ",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +47,11 @@ urlpatterns = [
     path('v1/user/', include('userManagement.urls')),
     path('v1/business/', include('businessManagement.urls')),
     path('v1/customer/', include('customers.urls')),
+    path('google/', TemplateView.as_view(template_name = 'login/index.html')),
+    path('facebook/', TemplateView.as_view(template_name = 'login/fb.html')),
+    path('accounts/google/login/callback/logged/', TemplateView.as_view(template_name = 'login/loged.html')),
+    path('accounts/facebook/login/callback/logged/', TemplateView.as_view(template_name = 'login/loged.html')),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
 
 start()
