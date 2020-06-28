@@ -96,9 +96,9 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd8radshnbfoaoq',
-        'USER': 'sltonwqzyhdmvj',
-        'PASSWORD': '32bf07ab871360c06d341077310d109061b41122d383e237db8cf7bc80c6d3e0',
+        'NAME': 'dcsncmviduhfe1',
+        'USER': 'qegshxicalvfzj',
+        'PASSWORD': 'cf1b4fcd77c95c9a0be4c462a3b099f95d43bddd7a8284d38db35e6c9e5af884',
         'HOST': 'ec2-54-211-210-149.compute-1.amazonaws.com',
         'PORT': '5432',
 }
