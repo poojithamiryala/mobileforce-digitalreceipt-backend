@@ -13,9 +13,12 @@ webencodings==0.5.1
 whitenoise==5.1.0
 gunicorn
 PyJwt
+django-push-notifications
 django_cron
 apscheduler
 django-environ
 fcm_django
 django-allauth
 drf-yasg
+djangorestframework_simplejwt==4.4.0
+requests
