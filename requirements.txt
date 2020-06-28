@@ -13,7 +13,6 @@ webencodings==0.5.1
 whitenoise==5.1.0
 gunicorn
 PyJwt
-django-push-notifications
 django_cron
 apscheduler
 django-environ
