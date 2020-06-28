@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['frozen-island-67494.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['frozen-island-67494.herokuapp.com','127.0.0.1','digital-receipt-07.herokuapp.com']
 
 # Application definition
 
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'customers',
     'businessManagement.apps.BusinessmanagementConfig',
     'djoser',
-    'push_notifications',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -97,18 +96,18 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dqgbprdrjnb1f',
-        'USER': 'vhwihfjmrokxtr',
-        'PASSWORD': '0eb2d1620febaf27b8b98351bd5140dee76aa9efcd8dfe60e693b882e25dec0d',
-        'HOST': 'ec2-54-234-44-238.compute-1.amazonaws.com',
+        'NAME': 'ddvfp9h9k873v4',
+        'USER': 'hgdzjlhltufbsc',
+        'PASSWORD': '51f8005b947bdbde56df87a760f18253999b1aca929fc0ab43c3869dd56335f7',
+        'HOST': 'ec2-54-161-208-31.compute-1.amazonaws.com',
         'PORT': '5432',
 }
 }
 
 import dj_database_url
 
-# db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-# DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
