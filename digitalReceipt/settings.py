@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'customers',
     'businessManagement.apps.BusinessmanagementConfig',
     'djoser',
-    'push_notifications',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -97,18 +96,18 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dqgbprdrjnb1f',
-        'USER': 'vhwihfjmrokxtr',
-        'PASSWORD': '0eb2d1620febaf27b8b98351bd5140dee76aa9efcd8dfe60e693b882e25dec0d',
-        'HOST': 'ec2-54-234-44-238.compute-1.amazonaws.com',
+        'NAME': 'd8radshnbfoaoq',
+        'USER': 'sltonwqzyhdmvj',
+        'PASSWORD': '32bf07ab871360c06d341077310d109061b41122d383e237db8cf7bc80c6d3e0',
+        'HOST': 'ec2-54-211-210-149.compute-1.amazonaws.com',
         'PORT': '5432',
 }
 }
 
 import dj_database_url
 
-# db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-# DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
