@@ -28,7 +28,7 @@ def notificationsJob():
                 fcm_device = FCMDevice.objects.get(
                     type=users_data['deviceType'],
                     registration_id=users_data['registration_id'])
-                fcm_device.send_message(title=data['title'], body=data['message'], data={"click_action": "FLUTTER_NOTIFICATION_CLICK","createdAt":data['createdAt']})
+                fcm_device.send_message(title=data['title'], body=data['message'], data={"click_action": "FLUTTER_NOTIFICATION_CLICK"})
                 Notifications.objects.filter(registration_id=users_data['registration_id']).update(delivered=True)
     except Exception as error:
         print(error)
