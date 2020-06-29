@@ -11,15 +11,19 @@ from userManagement.models import User
 from userManagement.serializers import UserSerializer
 from .models import Receipts, Products
 from .serializers import ReceiptSerializer, ProductSerializer
+
+
 def add_one_to_receipt_number(user):
     """
     Returns the next default value for the `ones` field, starts with
     1
     """
-    largest = Receipts.objects.filter(user=user,receipt_number__startswith='R-').order_by('receipt_number').last()
+    largest = Receipts.objects.filter(user=user, receipt_number__startswith='R-').order_by('receipt_number').last()
     if not largest:
         return 1
-    return 'R-'+largest.receipt_number + 1
+    return 'R-' + largest.receipt_number + 1
+
+
 @api_view(['POST'])
 def create_receipt(request):
     if request.method == 'POST':
@@ -35,6 +39,8 @@ def create_receipt(request):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def add_product_info_to_receipt(request):
     # send the receipt id
@@ -63,12 +69,14 @@ def add_product_info_to_receipt(request):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 def get_all_receipt(request):
     # send the receipt id
     if request.method == 'GET':
         try:
-            recipt = Receipts.objects.filter(user=request.user_id)
+            recipt = Receipts.objects.filter(user=request.user_id,issued=True)
             if recipt:
                 user = User.objects.get(id=request.user_id)
                 userData = UserSerializer(user, many=False).data
@@ -85,7 +93,7 @@ def get_all_receipt(request):
                     print(data['products'])
                     customer = CustomerDetails.objects.get(pk=data['customer'])
                     data['customer'] = CustomersSerializer(customer, many=False).data
-                    data['total'] = sum(c['unit_price'] *c['quantity'] for c in data['products'])
+                    data['total'] = sum(c['unit_price'] * c['quantity'] for c in data['products'])
                 return JsonResponse({
                     "message": "Retreived all receipts",
                     "data": receipts}, status=status.HTTP_200_OK)
@@ -95,6 +103,7 @@ def get_all_receipt(request):
         except Exception as error:
             return JsonResponse({
                 "message": error}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def get_all_draft_receipt(request):
@@ -118,7 +127,7 @@ def get_all_draft_receipt(request):
                     print(data['products'])
                     customer = CustomerDetails.objects.get(pk=data['customer'])
                     data['customer'] = CustomersSerializer(customer, many=False).data
-                    data['total'] = sum(c['unit_price'] *c['quantity'] for c in data['products'])
+                    data['total'] = sum(c['unit_price'] * c['quantity'] for c in data['products'])
                 return JsonResponse({
                     "message": "Retreived all drafted receipts",
                     "data": draftReceipts}, status=status.HTTP_200_OK)
