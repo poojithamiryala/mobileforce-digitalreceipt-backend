@@ -172,6 +172,10 @@ def customize_receipt(request):
             return JsonResponse(
                 {"error": "Enter Customer name"}, status=status.HTTP_400_BAD_REQUEST
             )
+        if "email" not in request.data:
+            return JsonResponse(
+                {"error": "Enter email Address"}, status=status.HTTP_400_BAD_REQUEST
+            )
         if "address" not in request.data:
             return JsonResponse(
                 {"error": "Enter address"}, status=status.HTTP_400_BAD_REQUEST
