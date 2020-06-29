@@ -36,7 +36,11 @@ def create_receipt(request):
             return JsonResponse(
                 {"error": "Enter customerId"}, status=status.HTTP_400_BAD_REQUEST
             )
-        data = {"user": request.user_id, "customer": request.data["customerId"]}
+        data = {
+            "user": request.user_id,
+            "customer": request.data["customerId"],
+            "receipt_number": 1,
+        }
         serializer = ReceiptSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -201,6 +205,9 @@ def customize_receipt(request):
                 {"error": "Enter quantity"}, status=status.HTTP_400_BAD_REQUEST
             )
 
+        errorsDict = {}
+        data = {}
+
         receiptData = {
             "user": request.user_id,
             "customer": request.data["customerId"],
@@ -225,23 +232,27 @@ def customize_receipt(request):
 
         productData = {
             "receipt": request.data["receiptId"],
-            "name": request.data["name"],
+            "name": request.data["productName"],
             "quantity": request.data["quantity"],
-            "part_payment": request.data.get("part_payment"),
+            "part_payment": request.data.get("part_payment", 0),
             "unit_price": request.data["unit_price"],
         }
 
         productSerializer = ProductSerializer(data=productData)
 
-        if (
-            receiptSerializer.is_valid()
-            and productSerializer.is_valid()
-            and customerSerializer.is_valid()
-        ):
+        is_receipt_valid = receiptSerializer.is_valid()
+        is_product_valid = productSerializer.is_valid()
+        is_customer_valid = customerSerializer.is_valid()
+
+        if is_receipt_valid and is_product_valid and is_customer_valid:
             receiptSerializer.save()
             productSerializer.save()
             customerSerializer.save()
-            return JsonResponse(receiptSerializer.data, status=status.HTTP_200_OK)
+            data["receipt"] = receiptSerializer.data
+            data["product"] = productSerializer.data
+            data["customer"] = customerSerializer.data
+
+            return JsonResponse(data, status=status.HTTP_200_OK)
 
         errorsDict = {}
 
