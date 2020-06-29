@@ -120,7 +120,7 @@ def get_all_draft_receipt(request):
                     data['customer'] = CustomersSerializer(customer, many=False).data
                     data['total'] = sum(c['unit_price'] *c['quantity'] for c in data['products'])
                 return JsonResponse({
-                    "message": "Retreived all draft receipts",
+                    "message": "Retreived all drafted receipts",
                     "data": draftReceipts}, status=status.HTTP_200_OK)
             else:
                 return JsonResponse({
