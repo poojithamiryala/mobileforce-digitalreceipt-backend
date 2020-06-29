@@ -1,55 +1,13 @@
 import json
 import datetime
 
-
 from rest_framework import viewsets, status
-
 from django.shortcuts import render
 from django.http import JsonResponse
-
-
-from .models import customers, CustomerDetails
-from .serializers import customersSerializer, CustomersSerializer
+from .models import CustomerDetails
+from .serializers import CustomersSerializer
 from rest_framework.decorators import api_view
 
-
-class indexViewSet(viewsets.ModelViewSet):
-    queryset = customers.objects.all().order_by('name')
-    serializer_class = customersSerializer
-
-
-
-@api_view(['GET'])	
-def single(request, id):
-	if request.method == 'GET':
-		try:
-			customer = customers.objects.get(id = id)
-			return JsonResponse(customer, safe = False)
-		except:
-			return JsonResponse({
-				'error': 'customer does not exist'
-				}, status = status.HTTP_400_BAD_REQUEST)
-		
-@api_view(['POST'])
-def customer(request):
-    if request.method == 'POST':
-        issue_no = request.data['issue_no']
-        name = request.data['name']
-        email = request.data['email']
-        platform = request.data['platform']
-        return JsonResponse(issue_no, name, email, platform, safe = False)
-		
-
-# @api_view(['GET'])
-# def single(request, id):
-#     if request.method == 'GET':
-#         try:
-#             customer = customers.objects.get(id=id)
-#             return JsonResponse(customer, safe=False)
-#         except:
-#             return JsonResponse({
-#                 'error': 'customer does not exist'
-#             }, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -80,3 +38,17 @@ def get_customer(request, id):
             return JsonResponse({
                 'error': 'customer does not exist'
             }, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def all_customers(request):
+    if request.method == 'GET':
+        try:            
+            customer = CustomerDetails.objects.all().order_by('name')
+            customers = CustomersSerializer(customer, many = True)
+            return JsonResponse({
+                "data": customers
+            }, status = status.HTTP_200_OK)
+        except Exception as error:
+            return JsonResponse({
+                'error': 'no customers yet'
+            }, status= status.HTTP_400_BAD_REQUEST)
