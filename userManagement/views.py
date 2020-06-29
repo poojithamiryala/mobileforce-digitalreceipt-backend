@@ -212,16 +212,17 @@ def change_password(request):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PUT'])
+@api_view(['POST'])
 def logout(request):
-    if request.method == 'PUT':
+    if request.method == 'POST':
         try:
-            user_data = User.objects.get(id=request.user_id)
+            user = User.objects.get(id=request.user_id)
+            userData = UserSerializer(user, many=False).data
             user = User.objects.filter(id=request.user_id).update(
                 registration_id=None, deviceType=None,
                 active=False)
-            FCMDevice.objects.filter(type=user_data.deviceType,
-                                     registration_id=user_data.registration_id).delete()
+            FCMDevice.objects.filter(type=userData['deviceType'],
+                                     registration_id=userData['registration_id']).delete()
             data = {
                 'message': 'Logged out successfully',
                 "status": status.HTTP_200_OK

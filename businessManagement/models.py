@@ -17,6 +17,7 @@ class Receipts(models.Model):
     date = models.DateTimeField(null=True, default=datetime.now, blank=True)
     font = models.CharField(null=True, max_length=1000)
     color = models.CharField(null=True, max_length=1000)
+    preset = models.BooleanField(null=True, default=False)
     paid_stamp = models.BooleanField(null=True, default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -26,10 +27,11 @@ class Receipts(models.Model):
 
 
 class Products(models.Model):
-    receipt = models.ForeignKey(Receipts, on_delete=models.CASCADE)
-    name = models.CharField(null=True, max_length=100)
-    quantity = models.PositiveIntegerField(null=True, validators=[MinValueValidator(1)])
-    unit_price = models.FloatField(null=True, validators=[MinValueValidator(0)])
+    receipt = models.ForeignKey(Receipts, on_delete=models.CASCADE, null=False)
+    name = models.CharField(null=False, max_length=100)
+    quantity = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)])
+    unit_price = models.FloatField(null=False, validators=[MinValueValidator(0)])
+    part_payment = models.BooleanField(null=False, default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -42,5 +44,3 @@ class Notifications(models.Model):
     date_to_deliver = models.DateField(null=True, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-

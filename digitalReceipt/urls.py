@@ -43,17 +43,12 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('checkserver/',index, name='index' ),
-    #path('auth/', include('authapp.urls')),
     path('v1/user/', include('userManagement.urls')),
     path('v1/business/', include('businessManagement.urls')),
     path('v1/customer/', include('customers.urls')),
-    #path('google/', TemplateView.as_view(template_name = 'login/index.html')),
-    #path('facebook/', TemplateView.as_view(template_name = 'login/fb.html')),
-    #path('accounts/google/login/callback/logged/', TemplateView.as_view(template_name = 'login/loged.html')),
-    #path('accounts/facebook/login/callback/logged/', TemplateView.as_view(template_name = 'login/loged.html')),
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('hello/', views.HelloView.as_view(), name='hello'),
-    path('google/', views.GoogleView.as_view(), name='google'),
+    path('google', views.GoogleView.as_view(), name='google'),
 ]
 
 start()
