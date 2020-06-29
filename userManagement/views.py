@@ -9,6 +9,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 import random as r
 
+from businessManagement.models import Notifications
+from businessManagement.serializers import NotificationsSerializer
 from digitalReceipt import settings
 from services.email_verification import Gmail
 from .models import User
@@ -228,6 +230,127 @@ def logout(request):
                 "status": status.HTTP_200_OK
             }
             return JsonResponse(data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return JsonResponse({
+                'error': "User Does not exist"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({
+                'error': e
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def update_registration_id(request):
+    if request.method == 'PUT':
+        if 'deviceType' not in request.data:
+            return JsonResponse({"error": "Enter device type (andriod/ios)"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'registration_id' not in request.data:
+            return JsonResponse({"error": "Enter registration id of device"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if not (request.data['deviceType'] == 'andriod' or request.data['deviceType'] == 'ios'):
+            return JsonResponse({"error": "Enter valid device type (andriod/ios)"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            User.objects.filter(id=request.user_id).update(registration_id=request.data['registration_id'],
+                                                           deviceType=request.data['deviceType'], )
+            data = {
+                'message': 'Updated successfully',
+                "status": status.HTTP_200_OK
+            }
+            return JsonResponse(data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return JsonResponse({
+                'error': "User Does not exist"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({
+                'error': e
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def send_notification_now(request):
+    if request.method == 'POST':
+        if 'user_id' not in request.data:
+            return JsonResponse({"error": "Enter user id"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'title' not in request.data:
+            return JsonResponse({"error": "Enter title"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'message' not in request.data:
+            return JsonResponse({"error": "Enter message"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(id=request.data['user_id'])
+            data = {
+                'user': request.data['user_id'],
+                'delivered': True,
+                'title': request.data['title'],
+                'message': request.data['message'],
+                'date_to_deliver': datetime.date.today()
+            }
+            notification = NotificationsSerializer(data=data)
+            if notification.is_valid():
+                notification.save()
+            users_data = UserSerializer(user, many=False).data
+            if users_data['active']:
+                fcm_device = FCMDevice.objects.get(
+                    type=users_data['deviceType'],
+                    registration_id=users_data['registration_id'])
+                fcm_device.send_message(title=request.data['title'], body=request.data['message'],
+                                        data={"click_action": "FLUTTER_NOTIFICATION_CLICK"})
+                data = {
+                    'message': 'sent successfully',
+                    "status": status.HTTP_200_OK
+                }
+                return JsonResponse(data, status=status.HTTP_200_OK)
+            else:
+                data = {
+                    'message': 'User is inactive..Saved notification',
+                    "status": status.HTTP_400_BAD_REQUEST
+                }
+                return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return JsonResponse({
+                'error': "User Does not exist"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return JsonResponse({
+                'error': e
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def create_notification(request):
+    if request.method == 'POST':
+        if 'user_id' not in request.data:
+            return JsonResponse({"error": "Enter user id"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'title' not in request.data:
+            return JsonResponse({"error": "Enter title"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'message' not in request.data:
+            return JsonResponse({"error": "Enter message"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'date_to_deliver' not in request.data:
+            return JsonResponse({"error": "Enter date_to_deliver"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.get(id=request.data['user_id'])
+            data = {
+                'user': request.data['user_id'],
+                'delivered': False,
+                'title': request.data['title'],
+                'message': request.data['message'],
+                'date_to_deliver': request.data['date_to_deliver']
+            }
+            notification = NotificationsSerializer(data=data)
+            if notification.is_valid():
+                notification.save()
+                return JsonResponse(notification.data, status=status.HTTP_200_OK)
+            return JsonResponse(notification.errors, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return JsonResponse({
                 'error': "User Does not exist"
