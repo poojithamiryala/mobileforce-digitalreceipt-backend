@@ -11,15 +11,20 @@ from userManagement.models import User
 from userManagement.serializers import UserSerializer
 from .models import Receipts, Products
 from .serializers import ReceiptSerializer, ProductSerializer
+
+
 def add_one_to_receipt_number(user):
     """
     Returns the next default value for the `ones` field, starts with
     1
     """
-    largest = Receipts.objects.filter(user=user,receipt_number__startswith='R-').order_by('receipt_number').last()
+    largest = Receipts.objects.filter(
+        user=user, receipt_number__startswith='R-').order_by('receipt_number').last()
     if not largest:
         return 1
     return 'R-'+largest.receipt_number + 1
+
+
 @api_view(['POST'])
 def create_receipt(request):
     if request.method == 'POST':
@@ -35,6 +40,8 @@ def create_receipt(request):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['POST'])
 def add_product_info_to_receipt(request):
     # send the receipt id
@@ -63,6 +70,8 @@ def add_product_info_to_receipt(request):
             serializer.save()
             return JsonResponse(serializer.data, status=status.HTTP_200_OK)
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 def get_all_receipt(request):
     # send the receipt id
@@ -84,8 +93,10 @@ def get_all_receipt(request):
                     data['products'] = products_data
                     print(data['products'])
                     customer = CustomerDetails.objects.get(pk=data['customer'])
-                    data['customer'] = CustomersSerializer(customer, many=False).data
-                    data['total'] = sum(c['unit_price'] *c['quantity'] for c in data['products'])
+                    data['customer'] = CustomersSerializer(
+                        customer, many=False).data
+                    data['total'] = sum(c['unit_price'] * c['quantity']
+                                        for c in data['products'])
                 return JsonResponse({
                     "message": "Retreived all receipts",
                     "data": receipts}, status=status.HTTP_200_OK)
@@ -96,12 +107,14 @@ def get_all_receipt(request):
             return JsonResponse({
                 "message": error}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_all_draft_receipt(request):
     # send the receipt id
     if request.method == 'GET':
         try:
-            draftReceipt = Receipts.objects.filter(user=request.user_id, issued=False)
+            draftReceipt = Receipts.objects.filter(
+                user=request.user_id, issued=False)
             if draftReceipt:
                 user = User.objects.get(id=request.user_id)
                 userData = UserSerializer(user, many=False).data
@@ -117,8 +130,10 @@ def get_all_draft_receipt(request):
                     data['products'] = products_data
                     print(data['products'])
                     customer = CustomerDetails.objects.get(pk=data['customer'])
-                    data['customer'] = CustomersSerializer(customer, many=False).data
-                    data['total'] = sum(c['unit_price'] *c['quantity'] for c in data['products'])
+                    data['customer'] = CustomersSerializer(
+                        customer, many=False).data
+                    data['total'] = sum(c['unit_price'] * c['quantity']
+                                        for c in data['products'])
                 return JsonResponse({
                     "message": "Retreived all drafted receipts",
                     "data": draftReceipts}, status=status.HTTP_200_OK)
@@ -128,3 +143,76 @@ def get_all_draft_receipt(request):
         except Exception as error:
             return JsonResponse({
                 "message": error}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def customize_receipt(request):
+    if request.method == 'POST':
+        if 'customerId' not in request.data:
+            return JsonResponse({"error": "Enter customerId"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'signature' not in request.data:
+            return JsonResponse({"error": "Upload Signature"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'customerName' not in request.data:
+            return JsonResponse({"error": "Enter Customer name"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'address' not in request.data:
+            return JsonResponse({"error": "Enter address"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'phoneNumber' not in request.data:
+            return JsonResponse({"error": "Phone Number"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'unit_price' not in request.data:
+            return JsonResponse({"error": "Enter unit_price"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'receiptId' not in request.data:
+            return JsonResponse({"error": "Enter receiptId"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'productName' not in request.data:
+            return JsonResponse({"error": "Enter product name"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'quantity' not in request.data:
+            return JsonResponse({"error": "Enter quantity"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        if 'unit_price' not in request.data:
+            return JsonResponse({"error": "Enter unit_price"},
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        receiptData = {
+            'user': request.user_id,
+            'customer': request.data['customerId'],
+            'signature': request.data['signature'],
+            'font': request.data.get('font'),
+            'color': request.data.get('color'),
+            'paid_stamp': request.data.get('paidStamp'),
+        }
+
+        receiptSerializer = ReceiptSerializer(data=receiptData)
+
+        customerData = {'name': request.data['customerName'],
+                        'email': request.data['email'],
+                        'phoneNumber': request.data['phoneNumber'],
+                        'address': request.data['address'],
+                        'user': request.user_id,
+                        'saved': True if request.data.get('saved') else False}
+
+        customerSerializer = CustomersSerializer(data=customerData)
+
+        productData = {
+            'receipt': request.data['receiptId'],
+            'name': request.data['name'],
+            'quantity': request.data['quantity'],
+            'part_payment': request.data.get('part_payment'),
+            'unit_price': request.data['unit_price']
+        }
+
+        productSerializer = ProductSerializer(data=productData)
+
+        if receiptSerializer.is_valid() and productSerializer.is_valid() and customerSerializer.is_valid():
+            receiptSerializer.save()
+            productSerializer.save()
+            customerSerializer.save()
+            return JsonResponse(receiptSerializer.data, status=status.HTTP_200_OK)
+
+        return JsonResponse(receiptSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
