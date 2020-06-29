@@ -55,9 +55,11 @@ def customer(request):
 @api_view(['POST'])
 def create_customer(request):
     if request.method == 'POST':
+        print(request.user_id)
         request.data._mutable = True
         request.data['user'] = request.user_id
         request.data._mutable = False
+        print(request.data)
         serializer = CustomersSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
