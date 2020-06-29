@@ -26,7 +26,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['degeit.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['frozen-island-67494.herokuapp.com','127.0.0.1','digital-receipt-07.herokuapp.com','degeit.herokuapp.com']
+
 
 # Application definition
 
@@ -45,7 +46,6 @@ INSTALLED_APPS = [
     'customers',
     'businessManagement.apps.BusinessmanagementConfig',
     #'djoser',
-    'push_notifications',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -95,12 +95,12 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 
 
 DATABASES = {
-    'default': {
+     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd3vgfstm28aef8',
-        'USER': 'orcddppxebqkdp',
-        'PASSWORD': '5e0aa2c4485dd30616f0518230ff7b26436ae39bebc054646e0999193dfba797',
-        'HOST': 'ec2-54-175-117-212.compute-1.amazonaws.com',
+        'NAME': 'ddvfp9h9k873v4',
+        'USER': 'hgdzjlhltufbsc',
+        'PASSWORD': '51f8005b947bdbde56df87a760f18253999b1aca929fc0ab43c3869dd56335f7',
+        'HOST': 'ec2-54-161-208-31.compute-1.amazonaws.com',
         'PORT': '5432',
 }
 }
@@ -116,8 +116,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-
     ),
     'DEFAULT_PERMISSIONS-CLASSES':(
         'rest_framework.permissions.IsAuthenticated'

@@ -3,7 +3,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
 
-#Views
+
+# Views
 @api_view(['GET'])
 def index(request):
     date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

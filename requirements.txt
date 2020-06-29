@@ -20,5 +20,4 @@ django-environ
 fcm_django
 django-allauth
 drf-yasg
-djangorestframework_simplejwt==4.4.0
 requests
