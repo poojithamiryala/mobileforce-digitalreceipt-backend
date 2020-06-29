@@ -215,4 +215,10 @@ def customize_receipt(request):
             customerSerializer.save()
             return JsonResponse(receiptSerializer.data, status=status.HTTP_200_OK)
 
-        return JsonResponse(receiptSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        errorsDict = {}
+
+        errorsDict.update(receiptSerializer.errors)
+        errorsDict.update(productSerializer.errors)
+        errorsDict.update(customerSerializer.errors)
+
+        return JsonResponse(errorsDict, status=status.HTTP_400_BAD_REQUEST)
