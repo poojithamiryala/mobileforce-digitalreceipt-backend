@@ -80,7 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.static',
+                # 'django.core.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -98,18 +98,18 @@ WSGI_APPLICATION = 'digitalReceipt.wsgi.application'
 DATABASES = {
      'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ddvfp9h9k873v4',
-        'USER': 'hgdzjlhltufbsc',
-        'PASSWORD': '51f8005b947bdbde56df87a760f18253999b1aca929fc0ab43c3869dd56335f7',
-        'HOST': 'ec2-54-161-208-31.compute-1.amazonaws.com',
+        'NAME': 'd6759nm1lpbtmm',
+        'USER': 'lxvylcgkrunnuy',
+        'PASSWORD': '3ffc69d388c478965610772cc76ee8586965bca6863c167f3080e30bfcd3ce21',
+        'HOST': 'ec2-52-202-66-191.compute-1.amazonaws.com',
         'PORT': '5432',
 }
 }
 
 import dj_database_url
 
-# db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-# DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
