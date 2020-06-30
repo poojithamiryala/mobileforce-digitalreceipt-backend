@@ -44,3 +44,10 @@ class Notifications(models.Model):
     date_to_deliver = models.DateField(null=True, max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class BusinessInfo(models.Model):
+    name = models.CharField(null = False, unique= True, max_length=150)
+    phone_number = models.CharField(max_length=50, null=False)
+    address = models.CharField(max_length=200, null=False)
+    slogan = models.CharField(max_length=50)
+    logo = models.ImageField(upload_to='logo/')

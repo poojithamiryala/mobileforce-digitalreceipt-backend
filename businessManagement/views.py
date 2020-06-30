@@ -9,8 +9,8 @@ from customers.models import CustomerDetails
 from customers.serializers import CustomersSerializer
 from userManagement.models import User
 from userManagement.serializers import UserSerializer
-from .models import Receipts, Products
-from .serializers import ReceiptSerializer, ProductSerializer
+from .models import Receipts, Products, BusinessInfo
+from .serializers import ReceiptSerializer, ProductSerializer, BusinessInfoSerializer
 
 
 def add_one_to_receipt_number(user):
@@ -137,3 +137,30 @@ def get_all_draft_receipt(request):
         except Exception as error:
             return JsonResponse({
                 "message": error}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def create_business(request):
+    if request.method == 'POST':
+        serializer = BusinessInfoSerializer(request.POST, request.FILES)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=status.HTTP_200_OK)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_business(request):
+    if request.method == 'GET':
+        try:
+            bus = BusinessInfo.objects.all().order_by('name')
+            business = BusinessInfoSerializer(bus, many=True)
+            return JsonResponse({
+                'data': business
+            }, status= status.HTTP_200_OK)
+        except BusinessInfo.DoesNotExist:
+            return JsonResponse({
+                'error': 'No Business created yet'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as error:
+            return JsonResponse({
+                'error': error
+            }, status= status.HTTP_400_BAD_REQUEST)

@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
 #from .router import router
 from rest_framework.authtoken import views
 from django.views.generic import TemplateView
@@ -49,6 +51,6 @@ urlpatterns = [
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('hello/', views.HelloView.as_view(), name='hello'),
     path('google', views.GoogleView.as_view(), name='google'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 start()
