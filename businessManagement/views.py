@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 
@@ -20,13 +23,12 @@ def add_one_to_receipt_number(user):
     1
     """
     largest = (
-        Receipts.objects.filter(user=user, receipt_number__startswith="R-")
-        .order_by("receipt_number")
-        .last()
+        Receipts.objects.filter(receipt_number__startswith="R-").count()
     )
+    print(largest)
     if not largest:
-        return 1
-    return "R-" + largest.receipt_number + 1
+        return 'R-'+str(1)
+    return "R-" + str(largest + 1)
 
 
 @api_view(["POST"])
@@ -40,6 +42,7 @@ def create_receipt(request):
             "user": request.user_id,
             "customer": request.data["customerId"],
             "receipt_number": 1,
+            "signature": request.FILES['signature']
         }
         serializer = ReceiptSerializer(data=data)
         if serializer.is_valid():
@@ -165,104 +168,83 @@ def get_all_draft_receipt(request):
 def customize_receipt(request):
     if request.method == "POST":
         try:
-            if "customerId" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter customerId"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "signature" not in request.data:
-                return JsonResponse(
-                    {"error": "Upload Signature"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "customerName" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter Customer name"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "email" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter email Address"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "address" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter address"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "phoneNumber" not in request.data:
-                return JsonResponse(
-                    {"error": "Phone Number"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "unit_price" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter unit_price"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "receiptId" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter receiptId"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "productName" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter product name"}, status=status.HTTP_400_BAD_REQUEST
-                )
-            if "quantity" not in request.data:
-                return JsonResponse(
-                    {"error": "Enter quantity"}, status=status.HTTP_400_BAD_REQUEST
-                )
-
-            errorsDict = {}
-            data = {}
-
-            receiptData = {
-                "user": request.user_id,
-                "customer": request.data["customerId"],
-                "signature": request.data["signature"],
-                "font": request.data.get("font"),
-                "color": request.data.get("color"),
-                "paid_stamp": request.data.get("paidStamp"),
-            }
-
-            receiptSerializer = ReceiptSerializer(data=receiptData)
-
-            customerData = {
-                "name": request.data["customerName"],
-                "email": request.data["email"],
-                "phoneNumber": request.data["phoneNumber"],
-                "address": request.data["address"],
-                "user": request.user_id,
-                "saved": True if request.data.get("saved") else False,
-            }
-
+            customerData = request.data["customer"]
+            customerData['user'] = request.user_id
+        
             customerSerializer = CustomersSerializer(data=customerData)
 
-            productData = {
-                "receipt": request.data["receiptId"],
-                "name": request.data["productName"],
-                "quantity": request.data["quantity"],
-                "part_payment": request.data.get("part_payment", 0),
-                "unit_price": request.data["unit_price"],
-            }
+            receiptData = request.data['receipt']
+            receiptData['user'] = request.user_id
+            productData = request.data["products"]
 
-            productSerializer = ProductSerializer(data=productData)
-
-            is_receipt_valid = receiptSerializer.is_valid()
-            is_product_valid = productSerializer.is_valid()
             is_customer_valid = customerSerializer.is_valid()
 
-            if is_receipt_valid and is_product_valid and is_customer_valid:
-                receiptSerializer.save()
-                productSerializer.save()
+            if is_customer_valid:
                 customerSerializer.save()
-                data["receipt"] = receiptSerializer.data
-                data["product"] = productSerializer.data
-                data["customer"] = customerSerializer.data
 
-                return JsonResponse(data, status=status.HTTP_200_OK)
+                if "receipt_number" in receiptData:
+                    receiptData['receipt_number'] = "AG-" + receiptData['receipt_number']
+                else:
+                    receiptData['receipt_number'] = add_one_to_receipt_number(request.user_id)
+
+                receiptData['customer'] = customerSerializer.data['id']
+
+                receiptSerailizer = ReceiptSerializer(data=receiptData)
+
+                if receiptSerailizer.is_valid():
+                    receiptSerailizer.save()
+
+                else:
+                    errorsDict = {}
+                    errorsDict.update(receiptSerailizer.errors)
+
+                    return JsonResponse(errorsDict, status=status.HTTP_400_BAD_REQUEST)
+
+                for product in productData:
+                    product['receipt'] = receiptSerailizer.data['id']
+
+                productSerializer = ProductSerializer(data=productData, many=True)
+
+                if productSerializer.is_valid():
+                    productSerializer.save()
+
+                else:
+                    errorsDict = {}
+                    errorsDict.update(productSerializer.errors)
+
+                    return JsonResponse(errorsDict, status=status.HTTP_400_BAD_REQUEST)
+
+                return JsonResponse({
+                    'productData': productSerializer.data,
+                    'receiptData': receiptSerailizer.data,
+                    'customerData': customerSerializer.data
+                }, status=status.HTTP_200_OK)
 
             else:
                 errorsDict = {}
-
-                errorsDict.update(receiptSerializer.errors)
-                errorsDict.update(productSerializer.errors)
                 errorsDict.update(customerSerializer.errors)
 
                 return JsonResponse(errorsDict, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as error:
             return JsonResponse(error, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PUT'])
+def upload_receipt_signature(request):
+    if request.method == "PUT":
+        try:
+            receipt = Receipts.objects.get(id=request.data['receiptId'])
+            receipt.signature = request.FILES['signature']
+            receipt.save()
+            receiptData = ReceiptSerializer(receipt)
+            data = {
+                'message': 'Signature updated successfully',
+                "data": receiptData.data,
+                "status": status.HTTP_200_OK
+            }
+            return JsonResponse(data, status=status.HTTP_200_OK)
+        except Receipts.DoesNotExist:
+            return JsonResponse({
+                'error': "Receipts Does not exist"
+            }, status=status.HTTP_400_BAD_REQUEST)
