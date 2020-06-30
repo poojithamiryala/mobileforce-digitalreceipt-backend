@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -107,8 +108,8 @@ DATABASES = {
 
 import dj_database_url
 
-db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
-DATABASES['default'].update(db_from_env)
+# db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES['default'].update(db_from_env)
 #dj_database_url.config(default='postgres://...'}
 
 REST_FRAMEWORK = {
